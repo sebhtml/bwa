@@ -56,6 +56,11 @@ bsw2pestat_t bsw2_stat(int n, bwtsw2_t **buf, kstring_t *msg, int max_ins)
 	if (r.low < 1) r.low = 1;
 	r.high = (int)(p75 + OUTLIER_BOUND * (p75 - p25) + .499);
 	ksprintf(msg, "[%s] (25, 50, 75) percentile: (%d, %d, %d)\n", __func__, p25, p50, p75);
+	if(r.low > r.high) {
+		int swap = r.low;
+		r.low = r.high;
+		r.high = swap;
+	}
 	ksprintf(msg, "[%s] low and high boundaries for computing mean and std.dev: (%d, %d)\n", __func__, r.low, r.high);
 	for (i = x = 0, r.avg = 0; i < k; ++i)
 		if (isize[i] >= r.low && isize[i] <= r.high)
